@@ -10,6 +10,12 @@
   </script>
 	<head>
 		<title></title>
+    <div style="color: red;">
+      {{.Error}}
+    </div>
+    <div style="color: orange;">
+      {{.Warning}}
+    </div>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link href="css/style.css" rel="stylesheet">
@@ -19,13 +25,21 @@
 {{ range .Dirs }}
 {{ . }}
 {{ end }}
-          <form method="post">
-                   <label for="message">Enter a message:</label><br>
-                   <input type="text" id="message" name="message"><br>
-                  <input type="submit" value="Submit">
-          </form>
+    <div>
+      Root: {{.Root}}
+    </div>
+<form method="post">
+      <label for="message">Enter a local directory to sync:</label><br>
+      <input type="text" id="message" name="message"><br>
+      <label for="root">Enter a the root where the files will be stored:</label><br>
+      <input type="text" id="root" name="root">
+  <input type="submit" value="Submit">
+</form>
 	</body>
-
+<br>
+<br>
+<br>
+<br>
   <input type="text" value="Hello " id="myInput">
   <button onclick="myFunction()">Copy text</button>
 </html>
