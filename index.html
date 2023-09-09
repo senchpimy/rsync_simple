@@ -1,5 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+  <script>
+   function myFunction() {
+     var copyText = document.getElementById("myInput");
+     copyText.select();
+     //copyText.setSelectionRange(0, 99999); // For mobile devices
+     navigator.clipboard.writeText(copyText.value);
+   } 
+  </script>
 	<head>
 		<title></title>
 		<meta charset="UTF-8">
@@ -7,7 +15,8 @@
 		<link href="css/style.css" rel="stylesheet">
 	</head>
 	<body>
-{{ range . }}
+    <p>Last Time Database was modified: <b>{{.Date}}</b></p>
+{{ range .Dirs }}
 {{ . }}
 {{ end }}
           <form method="post">
@@ -15,7 +24,8 @@
                    <input type="text" id="message" name="message"><br>
                   <input type="submit" value="Submit">
           </form>
-
-	
 	</body>
+
+  <input type="text" value="Hello " id="myInput">
+  <button onclick="myFunction()">Copy text</button>
 </html>

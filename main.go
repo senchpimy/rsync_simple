@@ -13,42 +13,41 @@ import (
 const path = "log";
 
 type noName struct{
-  date string
-  dirs []string
+  Date string
+  Dirs []string
 }
 
 func newStr() noName{
-  p:=noName{date:"", dirs: []string{}}
+  p:=noName{Date:"", Dirs: []string{}}
+  p.ReadLines()
   return p
 }
 
 func main() {
-        server:=newStr()
-        http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-				switch r.Method{
-					case "GET":
-						tpl, err := template.ParseFiles("index.html")
-						if err != nil {
-							http.Error(w, err.Error(), http.StatusInternalServerError)
-							return
-						}
-	
-						server.readLines()
-						if err != nil {return}
-	
-						err = tpl.Execute(w, server.dirs)
-						if err != nil {
-							http.Error(w, err.Error(), http.StatusInternalServerError)
-							return
-						}
-					case "POST":
-						fmt.Println("Mensaje Recibido")
-						message:=r.FormValue("message")
-      server.dirs = append(server.dirs, message)
-						server.LimitFile()
-							http.Redirect(w, r, "/", http.StatusSeeOther)
-				}
-			     })
+  server:=newStr()
+  http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+  	switch r.Method{
+  		case "GET":
+  			tpl, err := template.ParseFiles("index.html")
+  			if err != nil {
+  				http.Error(w, err.Error(), http.StatusInternalServerError)
+  				return
+  			}
+  			if err != nil {return}
+  	
+  			err = tpl.Execute(w, server)
+  			if err != nil {
+  				http.Error(w, err.Error(), http.StatusInternalServerError)
+  				return
+  			}
+  		case "POST":
+  			fmt.Println("Mensaje Recibido")
+  			message:=r.FormValue("message")
+        server.Dirs = append(server.Dirs, message)
+  		  server.Save()
+  			http.Redirect(w, r, "/", http.StatusSeeOther)
+  	}
+	})
 
         log.Print("Listening on :3001..")
         err := http.ListenAndServe(":3001", nil)
@@ -57,13 +56,8 @@ func main() {
         }
 }
 
-func (this noName)LimitFile() error {
+func (this *noName)Save() error {
   // get file size
-  info, err := os.Stat(path)
-  if err != nil {
-          return err
-  }
-  this.date = info.ModTime().Format(time.UnixDate)
   file, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0644)
   if err != nil {
           fmt.Println(err)
@@ -72,7 +66,7 @@ func (this noName)LimitFile() error {
   defer file.Close()
 
   // write to the file
-  for _,newdata:= range this.dirs{
+  for _,newdata:= range this.Dirs{
     _, err = file.WriteString(newdata+"\n")
     if err != nil {
             fmt.Println(err)
@@ -82,22 +76,22 @@ func (this noName)LimitFile() error {
   return nil
 }
 
-func (this noName)readLines() error {
+func (this *noName)ReadLines() error {
   info, err := os.Stat(path)
   if err != nil {
           return err
   }
-  this.date = info.ModTime().Format(time.UnixDate)
+  this.Date = info.ModTime().Format(time.UnixDate)
 	file, err := os.Open(path)
 	if err != nil {
 		return err
 	}
 	defer file.Close()
 
-	var lines []string
+	//var lines []string
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		lines = append(lines, scanner.Text())
+		this.Dirs = append(this.Dirs, scanner.Text())
 	}
 	return scanner.Err()
 }
