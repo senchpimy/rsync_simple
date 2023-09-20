@@ -10,6 +10,12 @@
   </script>
 	<head>
 		<title></title>
+    <div style="color: green;">
+      IP: {{.Ip}}
+      <br>
+      <br>
+        User : {{.User}}
+    </div>
     <div style="color: red;">
       {{.Error}}
     </div>
@@ -22,17 +28,28 @@
 	</head>
 	<body>
     <p>Last Time Database was modified: <b>{{.Date}}</b></p>
-{{ range .Dirs }}
-{{ . }}
-{{ end }}
+    <b>Dirs to sync:</b>
+    <br>
+      {{ range .Dirs }}
+        {{ . }}
+        <br>
+      {{ end }}
     <div>
-      Root: {{.Root}}
+      <b>Root:</b> {{.Root}}
     </div>
 <form method="post">
       <label for="message">Enter a local directory to sync:</label><br>
       <input type="text" id="message" name="message"><br>
       <label for="root">Enter a the root where the files will be stored:</label><br>
       <input type="text" id="root" name="root">
+      <br>
+      <br>
+      <label for="user">Select the user:</label>
+        <select name="user" id="user">
+        {{range .Users}}
+        <option value="{{.}}">{{.}}</option>
+        {{end}}
+        </select>
   <input type="submit" value="Submit">
 </form>
 	</body>
@@ -40,6 +57,6 @@
 <br>
 <br>
 <br>
-  <input type="text" value="Hello " id="myInput">
+  <input type="text" value="{{.Command}}" id="myInput">
   <button onclick="myFunction()">Copy text</button>
 </html>
