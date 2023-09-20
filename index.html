@@ -57,6 +57,9 @@
 <br>
 <br>
 <br>
-  <input type="text" value="{{.Command}}" id="myInput">
+<form method="post">
+  <input type="submit" value="Generate Commands">
+</form>
+  <textarea id="myInput">{{.Command}}</textarea>
   <button onclick="myFunction()">Copy text</button>
 </html>

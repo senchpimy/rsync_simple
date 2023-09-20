@@ -73,6 +73,17 @@ func main() {
 			message := r.FormValue("message")
 			root := r.FormValue("root")
 			user := r.FormValue("user")
+      if len(message)==0 && len(root)==0 && len(user)==0 {
+        command := ""
+        for _,dir := range server.Dirs{
+          com:=fmt.Sprintf("rsync -t %s %s:%s\n",dir,server.Ip, server.Root)
+          command+=com
+        }
+        server.Command=command
+			  server.Save()
+			  http.Redirect(w, r, "/", http.StatusSeeOther)
+        return
+      }
 			if len(server.Root) == 0 && len(root) == 0 {
 				server.Error = "Please provide a root to where the files will be sync"
 			} else if len(root) != 0 {
